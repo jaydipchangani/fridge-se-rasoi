@@ -42,10 +42,6 @@ export default function RootLayout({ children }) {
       <link rel="manifest" href="/site.webmanifest" />
       <link rel="preconnect" href="https://fonts.googleapis.com" />
       <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="" />
-      <link
-        href="https://fonts.googleapis.com/css2?family=Geist+Mono&family=Geist+Sans:wght@400;500;600;700&display=swap"
-        rel="stylesheet"
-      />
     
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
