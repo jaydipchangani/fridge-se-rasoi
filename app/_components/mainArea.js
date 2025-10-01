@@ -7,7 +7,7 @@ export default function MainArea() {
     const [ingredients, setIngredients] = useState([]);
     const [recipes, setRecipes] = useState([]);
     const [loading, setLoading] = useState(false);
-    const [error, setError] = useState(''); //
+    const [error, setError] = useState(''); 
 
     const handleInputChange = (e) => {
         setInput(e.target.value);
