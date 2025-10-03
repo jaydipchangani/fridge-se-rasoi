@@ -7,7 +7,8 @@ export default function MainArea() {
     const [ingredients, setIngredients] = useState([]);
     const [recipes, setRecipes] = useState([]);
     const [loading, setLoading] = useState(false);
-    const [error, setError] = useState(''); 
+    const [error, setError] = useState('');
+    const [language, setLanguage] = useState('English');
 
     const handleInputChange = (e) => {
         setInput(e.target.value);
@@ -37,7 +38,7 @@ export default function MainArea() {
         setRecipes([]);
 
         try {
-            const geminiResponse = await getRecipesFromGemini(ingredients);
+            const geminiResponse = await getRecipesFromGemini(ingredients, language);
             setRecipes(geminiResponse);
         } catch (err) {
             setError(err.message || 'Failed to fetch recipes.');
@@ -46,12 +47,28 @@ export default function MainArea() {
         }
     };
 
-
-
     return (
         <main className="p-4 text-center">
             <h2 className="text-2xl font-semibold mb-4">Welcome to Fridge Se Rasoi!</h2>
             <p className="mb-4">Discover delicious recipes based on the ingredients you have at home.</p>
+
+            <div className="mb-4">
+                <label htmlFor="language" className="mr-2 font-medium">Choose Language:</label>
+                <select
+                    id="language"
+                    value={language}
+                    onChange={(e) => setLanguage(e.target.value)}
+                    className="p-2 border border-gray-300 rounded"
+                >
+                    <option value="English">English</option>
+                    <option value="Hindi">Hindi</option>
+                    <option value="Marathi">Marathi</option>
+                    <option value="Gujarati">Gujarati</option>
+                    <option value="Tamil">Tamil</option>
+                    <option value="Telugu">Telugu</option>
+                    <option value="Bengali">Bengali</option>
+                </select>
+            </div>
 
             <div className="mb-4 max-w-md mx-auto">
                 <input
@@ -92,16 +109,14 @@ export default function MainArea() {
                 </>
             )}
 
-            <button className="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600 mt-4" onClick={() => { fetchRecipes() }}>
+            <button className="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600 mt-4" onClick={fetchRecipes}>
                 Find Recipes
             </button>
 
             <section className="mt-8">
                 <h3 className="text-xl font-semibold mb-2">Recipe Results:</h3>
-
                 {error && <p className="text-red-500">{error}</p>}
                 {loading && <p>Loading recipes...</p>}
-
                 {!loading && recipes.length > 0 && (
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                         {recipes.map((recipeText, index) => {
@@ -117,13 +132,7 @@ export default function MainArea() {
                                     className="bg-white border rounded-lg p-4 shadow text-left space-y-2"
                                 >
                                     <h4 className="text-lg font-bold text-blue-600">Recipe {index + 1}</h4>
-
-                                    {titleMatch && (
-                                        <h5 className="text-md font-semibold text-gray-800">
-                                            {titleMatch[1]}
-                                        </h5>
-                                    )}
-
+                                    {titleMatch && <h5 className="text-md font-semibold text-gray-800">{titleMatch[1]}</h5>}
                                     {ingredientsMatch && (
                                         <div>
                                             <h6 className="font-medium text-gray-700">Ingredients:</h6>
@@ -136,7 +145,6 @@ export default function MainArea() {
                                             </ul>
                                         </div>
                                     )}
-
                                     {stepsMatch && (
                                         <div>
                                             <h6 className="font-medium text-gray-700">Instructions:</h6>
@@ -148,13 +156,11 @@ export default function MainArea() {
                                             </ol>
                                         </div>
                                     )}
-
                                     {timeMatch && (
                                         <p className="text-sm text-gray-700">
                                             <span className="font-medium">Cooking Time:</span> {timeMatch[1]}
                                         </p>
                                     )}
-
                                     {servingMatch && (
                                         <p className="text-sm text-gray-700">
                                             <span className="font-medium">Serving Size:</span> {servingMatch[1]}
@@ -165,11 +171,6 @@ export default function MainArea() {
                         })}
                     </div>
                 )}
-
-
-
-
-
                 {!loading && !recipes.length && !error && (
                     <p>No recipes found. Please enter ingredients to see results.</p>
                 )}
