@@ -125,6 +125,10 @@ export default function MainArea() {
                             const stepsMatch = recipeText.match(/Step-by-step instructions:\s*([\s\S]*?)Cooking time:/i);
                             const timeMatch = recipeText.match(/Cooking time:\s*(.*)/i);
                             const servingMatch = recipeText.match(/Serving size:\s*(.*)/i);
+                            const caloriesMatch = recipeText.match(/Calories per serving:\s*(.*)/i);
+                            const macrosMatch = recipeText.match(/Macronutrients per serving:\s*([\s\S]*?)Other important nutritional details:/i);
+                            const otherNutrientsMatch = recipeText.match(/Other important nutritional details:\s*([\s\S]*?)Any health tips or dietary notes:/i);
+                            const healthTipsMatch = recipeText.match(/Any health tips or dietary notes:\s*([\s\S]*)/i);
 
                             return (
                                 <div
@@ -139,7 +143,7 @@ export default function MainArea() {
                                             <ul className="list-disc list-inside text-sm text-gray-600">
                                                 {ingredientsMatch[1]
                                                     .split('\n')
-                                                    .map((line, i) => line.trim())
+                                                    .map((line) => line.replace(/^\*+\s*/, '').trim())
                                                     .filter(Boolean)
                                                     .map((item, i) => <li key={i}>{item}</li>)}
                                             </ul>
@@ -166,9 +170,39 @@ export default function MainArea() {
                                             <span className="font-medium">Serving Size:</span> {servingMatch[1]}
                                         </p>
                                     )}
+                                    {caloriesMatch && (
+                                        <p className="text-sm text-gray-700">
+                                            <span className="font-medium">Calories per Serving:</span> {caloriesMatch[1]}
+                                        </p>
+                                    )}
+                                    {macrosMatch && (
+                                        <div className="text-sm text-gray-700">
+                                            <span className="font-medium">Macronutrients per Serving:</span>
+                                            <ul className="list-disc list-inside ml-4">
+                                                {macrosMatch[1]
+                                                    .split('\n')
+                                                    .map(line => line.replace(/^\*+\s*/, '').trim())
+                                                    .filter(Boolean)
+                                                    .map((item, i) => <li key={i}>{item}</li>)}
+                                            </ul>
+                                        </div>
+                                    )}
+                                    {otherNutrientsMatch && (
+                                        <div className="text-sm text-gray-700">
+                                            <span className="font-medium">Other Nutritional Details:</span>
+                                            <ul className="list-disc list-inside ml-4">
+                                                {otherNutrientsMatch[1]
+                                                    .split('\n')
+                                                    .map(line => line.replace(/^\*+\s*/, '').trim())
+                                                    .filter(Boolean)
+                                                    .map((item, i) => <li key={i}>{item}</li>)}
+                                            </ul>
+                                        </div>
+                                    )}
                                 </div>
                             );
                         })}
+
                     </div>
                 )}
                 {!loading && !recipes.length && !error && (
